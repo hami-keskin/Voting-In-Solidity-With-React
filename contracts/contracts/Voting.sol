@@ -12,6 +12,7 @@ contract Voting {
 
     event VoteCasted(address indexed voter, bool vote);
     event VotingReset(uint256 newDeadline);
+    event VotingCompleted();
 
     constructor() {
         contractOwner = msg.sender;
@@ -80,8 +81,12 @@ contract Voting {
         return (yesCounter, noCounter);
     }
 
-    function getVotingDeadline() public view returns (uint256, uint256) {
-        return (votingDeadline, getCurrentBlockTimestamp());
+    function getRemainingDeadlines() public view returns (uint256) {
+        if (block.timestamp < votingDeadline) {
+            return votingDeadline - block.timestamp;
+        } else {
+            return 0;
+        }
     }
 
     function getCurrentBlockTimestamp() internal view returns (uint256) {
@@ -91,6 +96,7 @@ contract Voting {
     function checkVotingComplete() public {
         if (block.timestamp >= votingDeadline) {
             voteCompleted = true;
+            emit VotingCompleted();
         }
     }
 }
