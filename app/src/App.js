@@ -15,7 +15,7 @@ function App() {
 }
 
 function Component() {
-  const contractAddress = "0x632abED5E6B585597906e055138968aBD11935ec";
+  const contractAddress = "0xeC7f7f8edd7A0F2F43A433966636F906d4f25EE0";
 
   const { contract, isLoading: contractLoading } = useContract(contractAddress);
 
