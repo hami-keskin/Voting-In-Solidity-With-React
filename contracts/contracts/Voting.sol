@@ -11,7 +11,6 @@ contract Voting {
 
     event VoteCasted(address indexed voter, bool vote);
     event VotingStarted(uint256 deadline);
-    event VotingEnded();
 
     constructor() {
         contractOwner = msg.sender;
@@ -75,17 +74,5 @@ contract Voting {
         } else {
             return 0;
         }
-    }
-
-    function endVoting() public {
-        require(msg.sender == contractOwner, "Not the contract owner.");
-        require(
-            block.timestamp >= votingDeadline,
-            "Voting deadline has not passed yet."
-        );
-
-        votingDeadline = 0;
-
-        emit VotingEnded();
     }
 }
