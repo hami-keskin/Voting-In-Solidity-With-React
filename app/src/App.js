@@ -21,6 +21,7 @@ function Component() {
 
   const [contractReady, setContractReady] = useState(false);
   const [duration, setDuration] = useState(10); // Set the default value to 10
+  const [vote, setVote] = useState(false); // Track the voting status
 
   useEffect(() => {
     if (contract) {
@@ -47,6 +48,8 @@ function Component() {
 
   const { mutateAsync: startVoting, isLoading: startVotingLoading } =
     useContractWrite(contract, "startVoting");
+  const { mutateAsync: castVote, isLoading: castVoteLoading } =
+    useContractWrite(contract, "vote");
 
   const handleStartVoting = async () => {
     try {
@@ -56,6 +59,16 @@ function Component() {
       console.error("Contract call failed:", error);
     }
   };
+
+  const handleVote = async (vote) => {
+    try {
+      await castVote({ args: [vote] });
+      setVote(true);
+      console.info("Vote casted successfully.");
+    } catch (error) {
+      console.error("Vote casting failed:", error);
+    }
+  };  
 
   return (
     <div>
@@ -71,18 +84,37 @@ function Component() {
           </p>
           <p>Vote Completed: {voteCompleted && voteCompleted.toString()}</p>
           <p>Vote Results: {voteResults && voteResults.toString()}</p>
-          <div>
-            <label htmlFor="duration">Voting Duration:</label>
-            <input
-              type="number"
-              id="duration"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            />
-            <button onClick={handleStartVoting} disabled={startVotingLoading}>
-              Start Voting
-            </button>
-          </div>
+          {voteCompleted && (
+            <div>
+              <label htmlFor="duration">Voting Duration:</label>
+              <input
+                type="number"
+                id="duration"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              />
+              <button onClick={handleStartVoting} disabled={startVotingLoading}>
+                Start Voting
+              </button>
+            </div>
+          )}
+          {!voteCompleted && !vote && (
+            <div>
+              <h2>Cast Your Vote</h2>
+              <button
+                onClick={() => handleVote(true)}
+                disabled={castVoteLoading}
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => handleVote(false)}
+                disabled={castVoteLoading}
+              >
+                No
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <p>Contract not found.</p>
