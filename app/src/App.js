@@ -47,10 +47,23 @@ function Component() {
 
   const { mutateAsync: startVoting, isLoading: startVotingLoading } =
     useContractWrite(contract, "startVoting");
+  const {
+    mutateAsync: checkVotingCompletion,
+    isLoading: checkVotingCompletionLoading,
+  } = useContractWrite(contract, "checkVotingCompletion");
 
   const handleStartVoting = async () => {
     try {
       const data = await startVoting({ args: [duration] });
+      console.info("Contract call success:", data);
+    } catch (error) {
+      console.error("Contract call failed:", error);
+    }
+  };
+
+  const handleCheckVotingCompletion = async () => {
+    try {
+      const data = await checkVotingCompletion({ args: [] });
       console.info("Contract call success:", data);
     } catch (error) {
       console.error("Contract call failed:", error);
@@ -81,6 +94,14 @@ function Component() {
             />
             <button onClick={handleStartVoting} disabled={startVotingLoading}>
               Start Voting
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={handleCheckVotingCompletion}
+              disabled={checkVotingCompletionLoading}
+            >
+              Check Voting Completion
             </button>
           </div>
         </>
