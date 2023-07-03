@@ -27,9 +27,6 @@ function Component() {
   const { data: noCounter } = useContractRead(contract, "noCounter", []);
   const { data: voteCompleted } = useContractRead(contract, "voteCompleted", []);
   const { data: voteResults } = useContractRead(contract, "voteResults", []);
-  const { data: voterLimit } = useContractRead(contract, "voterLimit", []);
-  const { data: voterVoted } = useContractRead(contract, "voterVoted", []);
-  const { data: voters } = useContractRead(contract, "voters", []);
   const { data: votingDeadline } = useContractRead(contract, "votingDeadline", []);
   const { data: yesCounter } = useContractRead(contract, "yesCounter", []);
 
@@ -65,9 +62,6 @@ function Component() {
           <p>No Counter: {noCounter && noCounter.toString()}</p>
           <p>Vote Completed: {voteCompleted ? "Yes" : "No"}</p>
           <p>Vote Results: {voteResults && voteResults.toString()}</p>
-          <p>Voter Limit: {voterLimit && voterLimit.toString()}</p>
-          <p>Voter Voted: {voterVoted && voterVoted.toString()}</p>
-          <p>Voters: {voters && voters.toString()}</p>
           <p>Voting Deadline: {votingDeadline && votingDeadline.toString()}</p>
           <p>Yes Counter: {yesCounter && yesCounter.toString()}</p>
 
