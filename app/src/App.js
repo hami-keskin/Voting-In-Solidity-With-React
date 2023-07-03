@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Sepolia } from "@thirdweb-dev/chains";
-import { ThirdwebProvider, useContract, useContractWrite, useContractRead } from "@thirdweb-dev/react";
+import {
+  ThirdwebProvider,
+  useContract,
+  useContractWrite,
+  useContractRead,
+} from "@thirdweb-dev/react";
 
 function App() {
   return (
@@ -23,33 +28,24 @@ function Component() {
     }
   }, [contract]);
 
-  const { data: contractOwner } = useContractRead(contract, "contractOwner", []);
+  const { data: contractOwner } = useContractRead(
+    contract,
+    "contractOwner",
+    []
+  );
   const { data: noCounter } = useContractRead(contract, "noCounter", []);
-  const { data: voteCompleted } = useContractRead(contract, "voteCompleted", []);
+  const { data: voteCompleted } = useContractRead(
+    contract,
+    "voteCompleted",
+    []
+  );
   const { data: voteResults } = useContractRead(contract, "voteResults", []);
-  const { data: votingDeadline } = useContractRead(contract, "votingDeadline", []);
+  const { data: votingDeadline } = useContractRead(
+    contract,
+    "votingDeadline",
+    []
+  );
   const { data: yesCounter } = useContractRead(contract, "yesCounter", []);
-
-  const { mutateAsync: resetVoting, isLoading: isResetting } = useContractWrite(contract, "resetVoting");
-  const { mutateAsync: vote, isLoading: isVoting } = useContractWrite(contract, "vote");
-
-  const handleResetVoting = async (duration) => {
-    try {
-      const data = await resetVoting({ args: [duration] });
-      console.log("resetVoting success:", data);
-    } catch (err) {
-      console.error("resetVoting error:", err);
-    }
-  };
-
-  const handleVote = async (voteValue) => {
-    try {
-      const data = await vote({ args: [voteValue] });
-      console.log("vote success:", data);
-    } catch (err) {
-      console.error("vote error:", err);
-    }
-  };
 
   return (
     <div>
@@ -64,16 +60,6 @@ function Component() {
           <p>Vote Results: {voteResults && voteResults.toString()}</p>
           <p>Voting Deadline: {votingDeadline && votingDeadline.toString()}</p>
           <p>Yes Counter: {yesCounter && yesCounter.toString()}</p>
-
-          <button onClick={() => handleResetVoting()} disabled={isResetting}>
-            {isResetting ? "Resetting..." : "Reset Voting"}
-          </button>
-          <button onClick={() => handleVote(true)} disabled={isVoting}>
-            {isVoting ? "Voting..." : "Vote Yes"}
-          </button>
-          <button onClick={() => handleVote(false)} disabled={isVoting}>
-            {isVoting ? "Voting..." : "Vote No"}
-          </button>
         </>
       ) : (
         <p>Contract not found.</p>
