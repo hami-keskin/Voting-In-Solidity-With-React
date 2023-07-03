@@ -21,7 +21,10 @@ contract Voting {
 
     function vote(bool _vote) public {
         require(!voteCompleted, "Voting has been completed.");
-        require(block.timestamp < votingDeadline, "Voting deadline has passed.");
+        require(
+            block.timestamp < votingDeadline,
+            "Voting deadline has passed."
+        );
         require(!voterVoted[msg.sender], "This voter has already voted.");
 
         if (_vote) {
@@ -46,17 +49,18 @@ contract Voting {
         votingDeadline = block.timestamp + _duration;
         voteCompleted = false;
 
+        // Reset voterVoted mapping
+        for (uint256 i = 0; i < voters.length; i++) {
+            delete voterVoted[voters[i]];
+        }
+
         emit VotingReset(votingDeadline);
     }
 
     function voteResults()
         public
         view
-        returns (
-            string memory result,
-            uint256 yesVotes,
-            uint256 noVotes
-        )
+        returns (string memory result, uint256 yesVotes, uint256 noVotes)
     {
         if (yesCounter > noCounter) {
             result = "Yes";
