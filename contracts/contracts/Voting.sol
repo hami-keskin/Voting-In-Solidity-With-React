@@ -3,16 +3,15 @@ pragma solidity ^0.8.0;
 
 contract Voting {
     bool public voteCompleted;
-    uint public yesCounter;
-    uint public noCounter;
+    uint256 public yesCounter;
+    uint256 public noCounter;
     address[] public voters;
-    uint public votingDeadline;
+    uint256 public votingDeadline;
     address public contractOwner;
-    uint public voterLimit = 100;
     mapping(address => bool) public voterVoted;
 
     event VoteCasted(address indexed voter, bool vote);
-    event VotingReset(uint newDeadline);
+    event VotingReset(uint256 newDeadline);
 
     constructor() {
         contractOwner = msg.sender;
@@ -22,18 +21,20 @@ contract Voting {
     function vote(bool _vote) public {
         require(!voteCompleted, "Voting has been completed.");
         require(authenticate(), "Authentication failed.");
-        require(block.timestamp < votingDeadline, "Voting deadline has passed.");
-        require(voters.length < voterLimit, "Voter limit has been reached.");
+        require(
+            block.timestamp < votingDeadline,
+            "Voting deadline has passed."
+        );
         require(!voterVoted[msg.sender], "This voter has already voted.");
-
-        voters.push(msg.sender);
-        voterVoted[msg.sender] = true;
 
         if (_vote) {
             yesCounter++;
         } else {
             noCounter++;
         }
+
+        voters.push(msg.sender);
+        voterVoted[msg.sender] = true;
 
         emit VoteCasted(msg.sender, _vote);
     }
@@ -45,23 +46,51 @@ contract Voting {
         return true;
     }
 
-    function resetVoting(uint _duration) public {
+    function startVoting(uint256 _duration) public {
         require(msg.sender == contractOwner, "Not the contract owner.");
         require(!voteCompleted, "Voting has already started.");
 
-        voteCompleted = true;
         yesCounter = 0;
         noCounter = 0;
-        for (uint i = 0; i < voters.length; i++) {
+        for (uint256 i = 0; i < voters.length; i++) {
             voterVoted[voters[i]] = false;
         }
         delete voters;
-        votingDeadline = block.timestamp + _duration;
+        votingDeadline = getCurrentBlockTimestamp() + _duration;
 
         emit VotingReset(votingDeadline);
     }
 
-    function voteResults() public view returns (uint, uint, address[] memory) {
-        return (yesCounter, noCounter, voters);
+    function resetVoting() public {
+        require(msg.sender == contractOwner, "Not the contract owner.");
+        require(voteCompleted, "Voting has not started yet.");
+
+        yesCounter = 0;
+        noCounter = 0;
+        for (uint256 i = 0; i < voters.length; i++) {
+            voterVoted[voters[i]] = false;
+        }
+        delete voters;
+        voteCompleted = false;
+
+        emit VotingReset(votingDeadline);
+    }
+
+    function voteResults() public view returns (uint256, uint256) {
+        return (yesCounter, noCounter);
+    }
+
+    function getVotingDeadline() public view returns (uint256, uint256) {
+        return (votingDeadline, getCurrentBlockTimestamp());
+    }
+
+    function getCurrentBlockTimestamp() internal view returns (uint256) {
+        return block.timestamp;
+    }
+
+    function checkVotingComplete() public {
+        if (block.timestamp >= votingDeadline) {
+            voteCompleted = true;
+        }
     }
 }
