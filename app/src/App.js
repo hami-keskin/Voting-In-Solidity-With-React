@@ -36,9 +36,9 @@ function Component() {
     "startVoting"
   );
 
-  const { mutateAsync: endVoting, isLoading: endVotingLoading } = useContractWrite(
+  const { mutateAsync: finalizeVoting, isLoading: finalizeVotingLoading } = useContractWrite(
     contract,
-    "endVoting"
+    "finalizeVoting"
   );
 
   const { mutateAsync: castVote, isLoading: castVoteLoading } = useContractWrite(
@@ -58,14 +58,15 @@ function Component() {
     }
   };
 
-  const handleEndVoting = async () => {
+  const handleFinalizeVoting = async () => {
     try {
-      const data = await endVoting();
-      console.info("contract call success", data);
+      const data = await finalizeVoting({ args: [] }); // Provide an empty array
+      console.info("Finalize Voting contract call success", data);
     } catch (err) {
-      console.error("contract call failure", err);
+      console.error("Finalize Voting contract call failure", err);
     }
   };
+  
 
   const handleCastVote = async () => {
     try {
@@ -115,8 +116,8 @@ function Component() {
           </button>
           <br />
           <br />
-          <button onClick={handleEndVoting} disabled={endVotingLoading}>
-            {endVotingLoading ? "Ending Voting..." : "End Voting"}
+          <button onClick={handleFinalizeVoting} disabled={finalizeVotingLoading}>
+            {finalizeVotingLoading ? "Finalizing Voting..." : "Finalize Voting"}
           </button>
         </>
       ) : (
