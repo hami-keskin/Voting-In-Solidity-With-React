@@ -20,7 +20,7 @@ function Component() {
   const { contract, isLoading: contractLoading } = useContract(contractAddress);
 
   const [contractReady, setContractReady] = useState(false);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(10); // Set the default value to 10
 
   useEffect(() => {
     if (contract) {
