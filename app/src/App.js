@@ -1,23 +1,17 @@
-import React, { useState, useEffect } from "react";
-import {
-  ThirdwebProvider,
-  useContract,
-  useContractWrite,
-  useContractRead,
-} from "@thirdweb-dev/react";
+import React, { useEffect, useState } from "react";
 import { Sepolia } from "@thirdweb-dev/chains";
+import { ThirdwebProvider, useContract, useContractWrite, useContractRead } from "@thirdweb-dev/react";
 
-import "./styles/Home.css";
-
-export default function Home() {
+function App() {
   return (
     <ThirdwebProvider activeChain={Sepolia}>
-      <Voting />
+      <Component />
     </ThirdwebProvider>
   );
 }
-function Voting() {
-  const contractAddress = "0xDb2Ad82DB40ECb514e0b65668FA552E76eabbCc9";
+
+function Component() {
+  const contractAddress = "0x632abED5E6B585597906e055138968aBD11935ec";
 
   const { contract, isLoading: contractLoading } = useContract(contractAddress);
 
@@ -29,36 +23,18 @@ function Voting() {
     }
   }, [contract]);
 
-  const { data: contractOwner } = useContractRead(
-    contract,
-    "contractOwner",
-    []
-  );
+  const { data: contractOwner } = useContractRead(contract, "contractOwner", []);
   const { data: noCounter } = useContractRead(contract, "noCounter", []);
-  const { data: voteCompleted } = useContractRead(
-    contract,
-    "voteCompleted",
-    []
-  );
+  const { data: voteCompleted } = useContractRead(contract, "voteCompleted", []);
   const { data: voteResults } = useContractRead(contract, "voteResults", []);
   const { data: voterLimit } = useContractRead(contract, "voterLimit", []);
   const { data: voterVoted } = useContractRead(contract, "voterVoted", []);
   const { data: voters } = useContractRead(contract, "voters", []);
-  const { data: votingDeadline } = useContractRead(
-    contract,
-    "votingDeadline",
-    []
-  );
+  const { data: votingDeadline } = useContractRead(contract, "votingDeadline", []);
   const { data: yesCounter } = useContractRead(contract, "yesCounter", []);
 
-  const { mutateAsync: resetVoting, isLoading: isResetting } = useContractWrite(
-    contract,
-    "resetVoting"
-  );
-  const { mutateAsync: vote, isLoading: isVoting } = useContractWrite(
-    contract,
-    "vote"
-  );
+  const { mutateAsync: resetVoting, isLoading: isResetting } = useContractWrite(contract, "resetVoting");
+  const { mutateAsync: vote, isLoading: isVoting } = useContractWrite(contract, "vote");
 
   const handleResetVoting = async (duration) => {
     try {
@@ -95,10 +71,7 @@ function Voting() {
           <p>Voting Deadline: {votingDeadline && votingDeadline.toString()}</p>
           <p>Yes Counter: {yesCounter && yesCounter.toString()}</p>
 
-          <button
-            onClick={() => handleResetVoting(3600)}
-            disabled={isResetting}
-          >
+          <button onClick={() => handleResetVoting()} disabled={isResetting}>
             {isResetting ? "Resetting..." : "Reset Voting"}
           </button>
           <button onClick={() => handleVote(true)} disabled={isVoting}>
@@ -114,3 +87,5 @@ function Voting() {
     </div>
   );
 }
+
+export default App;
