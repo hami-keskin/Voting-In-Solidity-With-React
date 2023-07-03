@@ -53,50 +53,38 @@ contract Voting {
 
         yesCounter = 0;
         noCounter = 0;
-        for (uint256 i = 0; i < voters.length; i++) {
-            voterVoted[voters[i]] = false;
-        }
         delete voters;
-        votingDeadline = getCurrentBlockTimestamp() + _duration;
+        votingDeadline = block.timestamp + _duration;
 
         emit VotingReset(votingDeadline);
     }
 
-    function resetVoting() public {
-        require(msg.sender == contractOwner, "Not the contract owner.");
-        require(voteCompleted, "Voting has not started yet.");
-
-        yesCounter = 0;
-        noCounter = 0;
-        for (uint256 i = 0; i < voters.length; i++) {
-            voterVoted[voters[i]] = false;
+    function voteResults()
+        public
+        view
+        returns (
+            string memory result,
+            uint256 yesVotes,
+            uint256 noVotes
+        )
+    {
+        if (yesCounter > noCounter) {
+            result = "Yes";
+        } else if (noCounter > yesCounter) {
+            result = "No";
+        } else {
+            result = "Equal";
         }
-        delete voters;
-        voteCompleted = false;
-
-        emit VotingReset(votingDeadline);
+        yesVotes = yesCounter;
+        noVotes = noCounter;
+        return (result, yesVotes, noVotes);
     }
 
-    function voteResults() public view returns (uint256, uint256) {
-        return (yesCounter, noCounter);
-    }
-
-    function getRemainingDeadlines() public view returns (uint256) {
+    function getRemainingDeadline() public view returns (uint256) {
         if (block.timestamp < votingDeadline) {
             return votingDeadline - block.timestamp;
         } else {
             return 0;
-        }
-    }
-
-    function getCurrentBlockTimestamp() internal view returns (uint256) {
-        return block.timestamp;
-    }
-
-    function checkVotingComplete() public {
-        if (block.timestamp >= votingDeadline) {
-            voteCompleted = true;
-            emit VotingCompleted();
         }
     }
 }
