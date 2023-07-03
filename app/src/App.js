@@ -3,7 +3,6 @@ import { Sepolia } from "@thirdweb-dev/chains";
 import {
   ThirdwebProvider,
   useContract,
-  useContractWrite,
   useContractRead,
 } from "@thirdweb-dev/react";
 
@@ -28,23 +27,12 @@ function Component() {
     }
   }, [contract]);
 
-  const { data: contractOwner } = useContractRead(
-    contract,
-    "contractOwner",
-    []
-  );
+  const { data: contractOwner } = useContractRead(contract, "contractOwner", []);
+  const { data: getVotingDeadline } = useContractRead(contract, "getVotingDeadline", []);
   const { data: noCounter } = useContractRead(contract, "noCounter", []);
-  const { data: voteCompleted } = useContractRead(
-    contract,
-    "voteCompleted",
-    []
-  );
+  const { data: voteCompleted } = useContractRead(contract, "voteCompleted", []);
   const { data: voteResults } = useContractRead(contract, "voteResults", []);
-  const { data: votingDeadline } = useContractRead(
-    contract,
-    "votingDeadline",
-    []
-  );
+  const { data: votingDeadline } = useContractRead(contract, "votingDeadline", []);
   const { data: yesCounter } = useContractRead(contract, "yesCounter", []);
 
   return (
@@ -55,6 +43,7 @@ function Component() {
         <>
           <h1>Voting Contract</h1>
           <p>Contract Owner: {contractOwner && contractOwner.toString()}</p>
+          <p>Get Voting Deadline: {getVotingDeadline && getVotingDeadline.toString()}</p>
           <p>No Counter: {noCounter && noCounter.toString()}</p>
           <p>Vote Completed: {voteCompleted ? "Yes" : "No"}</p>
           <p>Vote Results: {voteResults && voteResults.toString()}</p>
