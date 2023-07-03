@@ -16,7 +16,7 @@ contract Voting {
 
     constructor() {
         contractOwner = msg.sender;
-        voteCompleted = false;
+        voteCompleted = true;
     }
 
     function vote(bool _vote) public {
@@ -49,14 +49,13 @@ contract Voting {
 
     function startVoting(uint256 _duration) public {
         require(msg.sender == contractOwner, "Not the contract owner.");
-        require(!voteCompleted, "Voting has already started.");
+        require(voteCompleted, "Voting has not been completed yet.");
 
         yesCounter = 0;
         noCounter = 0;
         delete voters;
         votingDeadline = block.timestamp + _duration;
-
-        emit VotingReset(votingDeadline);
+        voteCompleted = false;
     }
 
     function voteResults()
@@ -85,6 +84,12 @@ contract Voting {
             return votingDeadline - block.timestamp;
         } else {
             return 0;
+        }
+    }
+
+    function checkVotingCompletion() public {
+        if (block.timestamp > votingDeadline) {
+            voteCompleted = true;
         }
     }
 }
