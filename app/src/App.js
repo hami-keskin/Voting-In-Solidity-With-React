@@ -16,11 +16,10 @@ function App() {
 }
 
 function Component() {
-  const contractAddress = "0x06Eb9F83DF91113627875D07De6b60676Ceb4102";
+  const contractAddress = "0xEcd8158587988bb9975e4e69a65bBAA76B3b9C26";
   const { contract, isLoading: contractLoading } = useContract(contractAddress);
 
   const [contractReady, setContractReady] = useState(false);
-  const [duration, setDuration] = useState(10); // Set the default value to 10
 
   useEffect(() => {
     if (contract) {
@@ -38,35 +37,21 @@ function Component() {
     "getRemainingDeadline",
     []
   );
-  const { data: voteCompleted } = useContractRead(
-    contract,
-    "voteCompleted",
-    []
-  );
   const { data: voteResults } = useContractRead(contract, "voteResults", []);
 
-  const { mutateAsync: startVoting, isLoading: startVotingLoading } =
-    useContractWrite(contract, "startVoting");
-  const {
-    mutateAsync: checkVotingCompletion,
-    isLoading: checkVotingCompletionLoading,
-  } = useContractWrite(contract, "checkVotingCompletion");
+  const { mutateAsync: startVoting, isLoading } = useContractWrite(
+    contract,
+    "startVoting"
+  );
+
+  const [duration, setDuration] = useState(20);
 
   const handleStartVoting = async () => {
     try {
       const data = await startVoting({ args: [duration] });
-      console.info("Contract call success:", data);
-    } catch (error) {
-      console.error("Contract call failed:", error);
-    }
-  };
-
-  const handleCheckVotingCompletion = async () => {
-    try {
-      const data = await checkVotingCompletion({ args: [] });
-      console.info("Contract call success:", data);
-    } catch (error) {
-      console.error("Contract call failed:", error);
+      console.info("Contract call success", data);
+    } catch (err) {
+      console.error("Contract call failure", err);
     }
   };
 
@@ -79,31 +64,21 @@ function Component() {
           <h1>Voting Contract</h1>
           <p>Contract Owner: {contractOwner && contractOwner.toString()}</p>
           <p>
-            Get Voting Deadline:{" "}
+            Get Remaining Deadline:{" "}
             {getRemainingDeadline && getRemainingDeadline.toString()}
           </p>
-          <p>Vote Completed: {voteCompleted && voteCompleted.toString()}</p>
           <p>Vote Results: {voteResults && voteResults.toString()}</p>
-          <div>
-            <label htmlFor="duration">Voting Duration:</label>
+          <label>
+            Duration (in seconds):
             <input
               type="number"
-              id="duration"
               value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              onChange={(e) => setDuration(Number(e.target.value))}
             />
-            <button onClick={handleStartVoting} disabled={startVotingLoading}>
-              Start Voting
-            </button>
-          </div>
-          <div>
-            <button
-              onClick={handleCheckVotingCompletion}
-              disabled={checkVotingCompletionLoading}
-            >
-              Check Voting Completion
-            </button>
-          </div>
+          </label>
+          <button onClick={handleStartVoting} disabled={isLoading}>
+            Start Voting
+          </button>
         </>
       ) : (
         <p>Contract not found.</p>
