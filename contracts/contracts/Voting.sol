@@ -2,26 +2,37 @@
 pragma solidity ^0.8.0;
 
 contract Voting {
+    struct Voter {
+        bool voted;
+        bool vote;
+    }
+
     uint256 public yesCounter;
     uint256 public noCounter;
-    address[] public voters;
     uint256 public votingDeadline;
     address public contractOwner;
-    mapping(address => bool) public voterVoted;
+    mapping(address => Voter) public voters;
 
     event VoteCasted(address indexed voter, bool vote);
     event VotingStarted(uint256 deadline);
+    event VotingEnded();
 
     constructor() {
         contractOwner = msg.sender;
     }
 
-    function vote(bool _vote) public {
-        require(
-            block.timestamp < votingDeadline,
-            "Voting deadline has passed."
-        );
-        require(!voterVoted[msg.sender], "This voter has already voted.");
+    modifier onlyOwner() {
+        require(msg.sender == contractOwner, "Not the contract owner.");
+        _;
+    }
+
+    modifier votingInProgress() {
+        require(block.timestamp < votingDeadline, "Voting deadline has passed.");
+        _;
+    }
+
+    function vote(bool _vote) public votingInProgress {
+        require(!voters[msg.sender].voted, "This voter has already voted.");
 
         if (_vote) {
             yesCounter++;
@@ -29,24 +40,16 @@ contract Voting {
             noCounter++;
         }
 
-        voters.push(msg.sender);
-        voterVoted[msg.sender] = true;
+        voters[msg.sender].voted = true;
+        voters[msg.sender].vote = _vote;
 
         emit VoteCasted(msg.sender, _vote);
     }
 
-    function startVoting(uint256 _duration) public {
-        require(msg.sender == contractOwner, "Not the contract owner.");
-
+    function startVoting(uint256 _duration) public onlyOwner {
         yesCounter = 0;
         noCounter = 0;
-
-        // Clear voters array
-        for (uint256 i = 0; i < voters.length; i++) {
-            delete voterVoted[voters[i]];
-        }
         delete voters;
-
         votingDeadline = block.timestamp + _duration;
 
         emit VotingStarted(votingDeadline);
@@ -74,5 +77,12 @@ contract Voting {
         } else {
             return 0;
         }
+    }
+
+    function endVoting() public onlyOwner {
+        require(block.timestamp >= votingDeadline, "Voting deadline has not passed yet.");
+
+        emit VotingEnded();
+        delete votingDeadline;
     }
 }
