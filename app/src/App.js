@@ -41,7 +41,10 @@ function Component() {
     "endVoting"
   );
 
-  const { mutateAsync: vote, isLoading: voteLoading } = useContractWrite(contract, "vote");
+  const { mutateAsync: castVote, isLoading: castVoteLoading } = useContractWrite(
+    contract,
+    "castVote"
+  );
 
   const [duration, setDuration] = useState(20);
   const [voteValue, setVoteValue] = useState(0);
@@ -64,12 +67,12 @@ function Component() {
     }
   };
 
-  const handleVote = async () => {
+  const handleCastVote = async () => {
     try {
-      const data = await vote({ args: [voteValue] });
-      console.info("Vote contract call success", data);
+      const data = await castVote({ args: [voteValue] });
+      console.info("Cast Vote contract call success", data);
     } catch (err) {
-      console.error("Vote contract call failure", err);
+      console.error("Cast Vote contract call failure", err);
     }
   };
 
@@ -107,8 +110,8 @@ function Component() {
               onChange={(e) => setVoteValue(Number(e.target.value))}
             />
           </label>
-          <button onClick={handleVote} disabled={voteLoading}>
-            {voteLoading ? "Voting..." : "Vote"}
+          <button onClick={handleCastVote} disabled={castVoteLoading}>
+            {castVoteLoading ? "Casting Vote..." : "Cast Vote"}
           </button>
           <br />
           <br />
