@@ -1,36 +1,52 @@
+# React Voting App
+
+This is a simple React voting application that interacts with a distributed smart contract on the Sepolia chain using Thirdweb.
+
+## Prerequisites
+
+Before running the application, make sure you have the following prerequisites installed:
+
+- Node.js
+- npm (Node Package Manager)
+
 ## Getting Started
 
-Create a project using this example:
+1. Clone the repository:
 
-```bash
-npx thirdweb create --template cra-javascript-starter
-```
+   ```bash
+   git clone https://github.com/your-username/react-voting-app.git
+   ```
 
-You can start editing the page by modifying `src/index.js`. The page auto-updates as you edit the file.
+2. Install the dependencies:
 
-On `src/index.js`, you'll find our `ThirdwebProvider` wrapping your app, this is necessary for our [hooks](https://portal.thirdweb.com/react) and
-[UI Components](https://portal.thirdweb.com/ui-components) to work.
+   ```bash
+   cd react-voting-app
+   npm install
+   ```
 
-### Deploy to IPFS
+3. Start the development server:
 
-Deploy a copy of your application to IPFS using the following command:
+   ```bash
+   npm start
+   ```
 
-```bash
-yarn deploy
-```
+4. Open your browser and go to [http://localhost:3000](http://localhost:3000) to view the application.
 
-## Learn More
+## Configuration
 
-To learn more about thirdweb, React and CRA, take a look at the following resources:
+The application requires you to have the necessary environment variables or configuration files to connect to the Sepolia chain using the ThirdwebProvider component from the `@thirdweb-dev/react` package. Make sure you have set the required environment variables or configuration files to connect to the desired chain.
 
-- [thirdweb React Documentation](https://docs.thirdweb.com/react) - learn about our React SDK.
-- [thirdweb TypeScript Documentation](https://docs.thirdweb.com/react) - learn about our JavaScript/TypeScript SDK.
-- [thirdweb Portal](https://docs.thirdweb.com/react) - check our guides and development resources.
-- [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started) - learn about CRA features.
-- [React documentation](https://reactjs.org/) - learn React.
+## Usage
 
-You can check out [the thirdweb GitHub organization](https://github.com/thirdweb-dev) - your feedback and contributions are welcome!
+- The application loads the smart contract at the specified address using the useContract hook.
+- The contract owner, remaining deadline, and vote results are displayed using the useContractRead hook.
+- The startVoting, finalizeVoting, and castVote functions are used to interact with the smart contract using the useContractWrite hook.
+- The duration and vote value can be adjusted using input fields, and the respective functions are called to perform contract transactions.
 
-## Join our Discord!
+## Contributing
 
-For any questions, suggestions, join our discord at [https://discord.gg/thirdweb](https://discord.gg/thirdweb).
+Contributions are welcome! If you find any issues or have improvement suggestions, you can create a new issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
