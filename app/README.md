@@ -14,7 +14,7 @@ Before running the application, make sure you have the following prerequisites i
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/react-voting-app.git
+   git clone https://github.com/hami-keskin/VotingInSolidityWithReact.git
    ```
 
 2. Install the dependencies:
@@ -46,7 +46,3 @@ The application requires you to have the necessary environment variables or conf
 ## Contributing
 
 Contributions are welcome! If you find any issues or have improvement suggestions, you can create a new issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
