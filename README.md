@@ -14,7 +14,7 @@ Before running the application, make sure you have the following prerequisites i
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/hami-keskin/VotingInSolidityWithReact.git
+   git clone https://github.com/hami-keskin/Voting-In-Solidity-With-React.git
    ```
 
 2. Install the dependencies:
